@@ -57,10 +57,12 @@ function App() {
         }
       } else {
         if(item.status === ELEVATOR_STATUS.BUSY) {
-          if(Math.abs(item.callsStack[item.callsStack.length - 1].floorNumber - floorNumber) < acc.steps) {
+          const totalSteps = item.callsStack.reduce((acc, item) => acc + item.steps, 0)
+
+          if(Math.abs(totalSteps - floorNumber) < acc.steps) {
             acc = {
               idx: item.id,
-              steps: Math.abs(item.callsStack[item.callsStack.length - 1].floorNumber - floorNumber),
+              steps: item.callsStack[item.callsStack.length - 1].floorNumber - floorNumber,
               direction: item.callsStack[item.callsStack.length - 1].floorNumber < floorNumber? DIRECTION.UP : DIRECTION.DOWN
             }
           }

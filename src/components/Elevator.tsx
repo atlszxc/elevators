@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { ElevatorsConf } from "../consts/config"
-import { ELEVATOR_STATUS, FLOOR_STATUS, IElevator, IFloorButton } from "../App"
+import { ELEVATOR_STATUS, IElevator, IElevatorHistory } from "../App"
+import { FLOOR_STATUS, IFloorButton } from "./FloorBtns"
 
 export enum DIRECTION {
     UP = 'up',
@@ -11,6 +12,7 @@ type ElevatorProp = {
     elevator: IElevator,
     changeFloorStatus: Dispatch<SetStateAction<IFloorButton[]>>,
     changeElevator: Dispatch<SetStateAction<IElevator[]>>,
+    updateHistory: Dispatch<SetStateAction<IElevatorHistory[]>>,
 }
 
 enum DELAIES {
@@ -18,7 +20,7 @@ enum DELAIES {
     REST_DELAY = 3000,
 }
 
-const Elevator = ({ elevator, changeFloorStatus, changeElevator }: ElevatorProp) => {
+const Elevator = ({ elevator, changeFloorStatus, changeElevator, updateHistory }: ElevatorProp) => {
     const [floors] = useState([...Array(ElevatorsConf.floorCount)].map((_, id) => id))
     const [isCalling, setIsCalling] = useState<boolean>(false)
 
@@ -37,6 +39,8 @@ const Elevator = ({ elevator, changeFloorStatus, changeElevator }: ElevatorProp)
     const move = async (steps: number, direction: DIRECTION, floorNumber: number) => {
         changeStatus(ELEVATOR_STATUS.BUSY)
 
+        const historySteps = steps
+
         while(steps > 0) {
             await delay(DELAIES.MOVE_DELAY).then(() => {
                 direction === DIRECTION.UP? elevator.currentPosition++ : elevator.currentPosition--
@@ -50,6 +54,14 @@ const Elevator = ({ elevator, changeFloorStatus, changeElevator }: ElevatorProp)
         }
 
         changeStatus(ELEVATOR_STATUS.REST)
+
+        updateHistory(prev => prev.concat({ 
+            floorNumber, 
+            direction, 
+            elevavatorNumber: elevator.id, 
+            steps: historySteps,
+            time: new Date(Date.now()) 
+        }))
 
         await delay(DELAIES.REST_DELAY).then(() => changeStatus(ELEVATOR_STATUS.FREE))
 
@@ -80,7 +92,7 @@ const Elevator = ({ elevator, changeFloorStatus, changeElevator }: ElevatorProp)
     })
 
     return (
-        <div className="flex flex-col-reverse px-4">
+        <div className="flex flex-col-reverse max-w-fit">
             {
                 floors.map((floor, id) => (
                     <div

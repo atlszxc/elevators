@@ -1,4 +1,4 @@
 export const ElevatorsConf = {
-    elevatorsCount: 2,
+    elevatorsCount: 6,
     floorCount: 5,
 }

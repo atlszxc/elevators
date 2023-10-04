@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react"
 import Elevator, { DIRECTION } from "./components/Elevator"
 import { ElevatorsConf } from "./consts/config"
+import FloorBtns from "./components/FloorBtns"
 
 interface ICallParams {
   steps: number,
@@ -85,20 +86,7 @@ function App() {
       {
         elevatorList.map((elevator, id) => <Elevator elevator={elevator} changeElevator={setElevators} changeFloorStatus={setFloorBtn} key={id} />)
       }
-      <div className="flex flex-col-reverse">
-        {
-          floorBtns.map(btn => (
-            <div key={btn.id} className="h-[150px] w-[50px] flex items-center justify-center">
-              <button 
-                onClick={() => btn.status === FLOOR_STATUS.FREE && callElevator(btn.id)}
-                className={`p-4 border-solid border-2 border-black duration-150 ${btn.status === FLOOR_STATUS.CALLING && 'bg-red-400 text-white'}`}
-              >
-                { btn.id + 1 }
-              </button>
-            </div>
-          ))
-        }
-      </div>
+      <FloorBtns floorBtns={floorBtns} callElevator={callElevator} />
     </div>
   )
 }

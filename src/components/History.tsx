@@ -20,7 +20,7 @@ const History = ({ records }: HistoryProp) => {
               {
                 records.map((record, idx) => (
                   <tr key={idx}>
-                    <td className="border border-slate-500">{ record.time.toLocaleTimeString() }</td>
+                    <td className="border border-slate-500 text-lg">{ record.time.toLocaleTimeString() }</td>
                     <td className="border border-slate-500">{ record.elevavatorNumber + 1 }</td>
                     <td className="border border-slate-500">{ record.floorNumber + 1 }</td>
                     <td className="border border-slate-500">{ record.direction }</td>
